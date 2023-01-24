@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import { StyleSheet, Text, View, Button } from "react-native";
 import { Camera } from "expo-camera";
+import * as ImageManipulator from "expo-image-manipulator";
 
 export default function CameraScreen() {
     const [permission, requestPermission] = Camera.useCameraPermissions();
@@ -25,12 +26,13 @@ export default function CameraScreen() {
             <Button
                 title="Take a picture"
                 onPress={async () => {
-                    if (cameraRef.current) {
-                        const pictureMetadata = await cameraRef.current.takePictureAsync();
-                        console.log("pictureMetadata", pictureMetadata);
-                    } else {
-                        console.log("Error while taking picture");
-                    }
+                    const pictureMetadata = await cameraRef.current.takePictureAsync();
+                    console.log("pictureMetadata", pictureMetadata);
+                    console.log(
+                        await ImageManipulator.manipulateAsync(pictureMetadata.uri, [
+                            { resize: { width: 800 } },
+                        ])
+                    );
                 }}
             />
         </>
